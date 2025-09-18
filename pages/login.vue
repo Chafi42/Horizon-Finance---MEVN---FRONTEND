@@ -10,23 +10,25 @@ const message = ref('')
 const handleLogin = async () => {
   try {
     const res = await loginUser({ email: email.value, password: password.value })
-    console.log("Réponse API login:", res)  // 👈 debug
+    console.log("Réponse API login:", res) // 👈 tu devrais voir name + token
 
-    // adapte ici selon ta vraie réponse API
-    if (res.token || res.accessToken) {
-      localStorage.setItem("token", res.token || res.accessToken)
+    if (res.token) {
+      localStorage.setItem("token", res.token)
+      // ✅ Sauvegarde aussi l'utilisateur
+      localStorage.setItem("user", JSON.stringify({
+        name: res.name,
+        email: res.email
+      }))
     }
 
     message.value = 'Connexion réussie ✅'
-
-    // Redirection
     await navigateTo('/dashboard')
-
   } catch (err) {
     console.error('Erreur API:', err)
     message.value = "Erreur lors de la connexion ❌"
   }
 }
+
 definePageMeta({
   layout: "user"
 })
