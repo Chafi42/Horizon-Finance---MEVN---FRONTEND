@@ -3,10 +3,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const token = process.client ? localStorage.getItem("token") : null
 
   // Routes protégées : accessibles uniquement si connecté
-  const protectedRoutes = ["/dashboard"]
+  const protectedRoutes = ["/dashboard", "/expenses", "/parametre"]
 
   // Routes publiques : accessibles uniquement si NON connecté
-  const publicOnlyRoutes = ["/login", "/register"]
+  const publicOnlyRoutes = ["/login", "/register", "/"]
 
   // 🚨 Cas 1 : utilisateur pas connecté mais essaie d’aller sur une route protégée
   if (protectedRoutes.includes(to.path) && !token) {
