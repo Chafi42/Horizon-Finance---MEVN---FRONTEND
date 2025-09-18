@@ -1,27 +1,39 @@
-<!-- pages/register.vue -->
 <script setup>
 import { ref } from 'vue'
-import { registerUser } from '~/services/userService'
+import { loginUser } from '~/services/userService'
+import { navigateTo } from '#app'   // Nuxt 3
 
-const name = ref('')
 const email = ref('')
 const password = ref('')
 const message = ref('')
 
-const handleLogin= async () => {
+const handleLogin = async () => {
   try {
-    await registerUser({ email: email.value, password: password.value })
-    message.value = 'Compte créé avec succès ✅'
+    const res = await loginUser({ email: email.value, password: password.value })
+    console.log("Réponse API login:", res)  // 👈 debug
+
+    // adapte ici selon ta vraie réponse API
+    if (res.token || res.accessToken) {
+      localStorage.setItem("token", res.token || res.accessToken)
+    }
+
+    message.value = 'Connexion réussie ✅'
+
+    // Redirection
+    await navigateTo('/dashboard')
+
   } catch (err) {
     console.error('Erreur API:', err)
-    message.value = "Erreur lors de l'inscription"
+    message.value = "Erreur lors de la connexion ❌"
   }
 }
+definePageMeta({
+  layout: "user"
+})
 </script>
 
 
 <template>
-
 
 <div
   class="w-full mt-4 flex flex-col items-center justify-center"
@@ -46,7 +58,7 @@ const handleLogin= async () => {
           v-model="email"
           type="email"
           required
-          class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-[#38E07B] shadow-sm rounded-lg"
+          class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-[#399A77] shadow-sm rounded-lg"
         />
       </div>
       <div>
@@ -54,7 +66,7 @@ const handleLogin= async () => {
           <label for="password" class="font-medium">Mot de passe
             <span class="text-green-500">*</span>
           </label>
-          <input v-model="password" type="password" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-[#38E07B] shadow-sm rounded-lg"/>
+          <input v-model="password" type="password" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-[#399A77] shadow-sm rounded-lg"/>
         </div>
       </div>
       <div class="flex items-center justify-between text-sm">
@@ -66,25 +78,26 @@ const handleLogin= async () => {
           />
           <label
             for="remember-me-checkbox"
-            class="relative flex w-5 h-5 bg-white peer-checked:bg-[#38E07B] rounded-md border ring-offset-2 duration-150 peer-active:ring cursor-pointer after:absolute after:inset-x-0 after:top-[3px] after:m-auto after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
+            class="relative flex w-5 h-5 bg-white peer-checked:bg-[#399A77] rounded-md border ring-offset-2 duration-150 peer-active:ring cursor-pointer after:absolute after:inset-x-0 after:top-[3px] after:m-auto after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
           ></label>
           <span>Se souvenir</span>
         </div>
         <NuxtLink 
           to="/"
-          class="text-center text-[#38E07B] font-bold text-xs hover:border-b"
+          class="text-center text-[#399A77] font-bold text-xs hover:border-b"
           >Mot de passe oublié ?</NuxtLink
         >
       </div>
       <button
-        to="dashboard"
-        class="w-full px-4 py-2 text-white font-medium bg-[#38E07B] active:bg-red-600 rounded-lg duration-150"
-      >
-        Connexion
-      </button>
+  type="submit"
+  class="w-full px-4 py-2 text-white font-medium bg-[#399A77] cursor-pointer rounded-lg duration-150"
+>
+  Connexion
+</button>
     </form>
     <button
-      class="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg text-sm font-medium hover:bg-gray-50 duration-150 active:bg-gray-100"
+    
+      class="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg text-sm font-medium hover:bg-gray-50 duration-150 active:bg-gray-100 cursor-pointer"
     >
       <!-- SVG for Google Sign In -->
       <img
@@ -95,11 +108,11 @@ const handleLogin= async () => {
       <!-- Comment: Google Icon SVG here -->
       Continue with Google
     </button>
-    <p class="text-center">
+    <p class="text-center text-sm">
       Vous n'avez pas de compte ?
       <NuxtLink
         to="register"
-        class="font-medium text-[#38E07B] hover:border-b">
+        class="font-bold text-[#399A77] hover:border-b">
         Inscrivez-vous
       </NuxtLink>
     </p>

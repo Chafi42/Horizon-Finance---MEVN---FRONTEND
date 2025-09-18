@@ -2,6 +2,7 @@
 <script setup>
 import { ref } from 'vue'
 import { registerUser } from '~/services/userService'
+import { navigateTo } from '#app'
 
 const name = ref('')
 const email = ref('')
@@ -9,8 +10,6 @@ const password = ref('')
 const message = ref('')
 
 const handleRegister = async () => {
-  console.log("Tentative d'inscription avec :", name.value, email.value, password.value)
-
   try {
     const res = await registerUser({
       name: name.value,
@@ -18,8 +17,7 @@ const handleRegister = async () => {
       password: password.value
     })
 
-    console.log("Réponse API :", res) // <== tu dois voir la réponse backend ici
-
+    console.log("Réponse API :", res)
     message.value = 'Compte créé avec succès ✅'
 
     await navigateTo('/login')
@@ -29,7 +27,12 @@ const handleRegister = async () => {
   }
 }
 
+// ✅ on définit le layout ici, pas dans la fonction
+definePageMeta({
+  layout: "user"
+})
 </script>
+
 
 <template>
   <div class="w-full mt-4 flex flex-col items-center justify-center">
@@ -82,19 +85,19 @@ const handleRegister = async () => {
 
         <button
           type="submit"
-          class="w-full px-4 py-2 text-white font-medium bg-[#38E07B] rounded-lg"
+          class="w-full cursor-pointer px-4 py-2 text-white font-medium bg-[#399A77] rounded-lg"
         >
           S'inscrire
         </button>
       </form>
 
-      <p v-if="message" class="text-center text-sm text-red-500 mt-2">
+      <p v-if="message" class="text-center text-sm  text-red-500 mt-2">
         {{ message }}
       </p>
 
-      <p class="text-center mt-4">
+      <p class="text-center text-sm">
         Vous avez un compte ?
-        <NuxtLink to="/login" class="text-[#38E07B]">
+        <NuxtLink to="/login" class="font-bold text-[#399A77] hover:border-b">
           Connectez-vous
         </NuxtLink>
       </p>

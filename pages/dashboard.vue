@@ -1,8 +1,10 @@
 <script setup>
 const logout = () => {
   localStorage.removeItem("token");
-  navigateTo("/login");
+  navigateTo("/");
 };
+const name = "";
+
 </script>
 
 <template>
